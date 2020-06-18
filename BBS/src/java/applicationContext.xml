@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--180409-20182963-张娜-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- 配置数据原 --> 
+   
+    <bean id="dataSource"  class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">  
+        <property name="driverClass"    value="com.mysql.jdbc.Driver"></property>  
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/bbs"></property>  
+        <property name="user" value="root"></property>  
+        <property name="password" value="root"></property>  
+        <!-- 指定连接数据库连接池的最大连接数 -->
+        <property name="maxPoolSize" value="40"/>
+        <!-- 指定连接数据库连接池的最小连接数 -->
+        <property name="minPoolSize" value="1"/>
+        <!-- 指定连接数据库连接池的初始化连接数 -->
+        <property name="initialPoolSize" value="1"/>
+        <!-- 指定连接数据库连接池的连接的最大空闲时间 -->
+        <property name="maxIdleTime" value="20"/>
+    </bean>  
+    <!-- 定义了Hibernate的SessionFactory-->  
+    <bean id="sessionFactory"  
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource"/> 
+        <property name="mappingResources"> 
+            <list>
+                <value>com/orm/Admin.hbm.xml</value>
+                <value>com/orm/Board.hbm.xml</value>
+                <value>com/orm/Post.hbm.xml</value>
+                <value>com/orm/Student.hbm.xml</value>
+                <value>com/orm/Reply.hbm.xml</value>
+            </list> 
+        </property>
+        <property name="hibernateProperties">  
+            <props>  
+                <prop key="hibernate.dialect">  
+                    org.hibernate.dialect.MySQLInnoDBDialect   
+                </prop>  
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.jdbc.fetch_size">50</prop>
+                <prop key="hibernate.jdbc.batch_size">50</prop>
+            </props>  
+        </property>  
+    </bean>  
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="dao" class="com.dao.BaseDaoImpl"></bean>
+    <bean id="loginService" class="com.serviceImpl.LoginServiceImpl"></bean>
+    <bean id="boardService" class="com.serviceImpl.BoardServiceImpl"></bean>
+    <bean id="postService" class="com.serviceImpl.PostServiceImpl"></bean>
+    <bean id="replyService" class="com.serviceImpl.ReplyServiceImpl"></bean>
+    <bean id="studentService" class="com.serviceImpl.StudentServiceImpl"></bean>
+    <bean id="adminService" class="com.serviceImpl.AdminServiceImpl"></bean>
+    
+    <context:annotation-config/>
+    <context:component-scan base-package="com"/>
+ 
+</beans>
+
+
